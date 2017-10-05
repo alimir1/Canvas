@@ -27,32 +27,61 @@ class ViewController: UIViewController {
     }
     
     @IBAction func onPanEmoji(_ panGestureRecognizer: UIPanGestureRecognizer) {
-        
-        //let translation = panGestureRecognizer.translation(in: self.view)
         let point = panGestureRecognizer.location(in: self.view)
         
         switch panGestureRecognizer.state {
         case .began:
             let imageView = panGestureRecognizer.view as! UIImageView
-            // Create a new image view that has the same image as the one currently panning
             newlyCreatedFace = UIImageView(image: imageView.image)
-            // Add the new face to the tray's parent view. 
+            newlyCreatedFace.isUserInteractionEnabled = true
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanNewEmoji))
+            let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(onPinchNewEmoji))
+            newlyCreatedFace.addGestureRecognizer(panGesture)
+            newlyCreatedFace.addGestureRecognizer(pinchGesture)
+            
             view.addSubview(newlyCreatedFace)
-            // Initialize the position of the new face. 
             newlyCreatedFace.center = imageView.center
             newlyCreatedFace.center.y += trayView.frame.origin.y
         case .changed:
             newlyCreatedFace.center = CGPoint(x: point.x , y:  point.y)
-            break;
+            break
         case .ended:
             break
         default:break
         }
     }
     
-    @IBAction func onTrayPanGesture(_ panGestureRecognizer: UIPanGestureRecognizer) {
-        //        let point = panGestureRecognizer.location(in: self.view)
+    func onPinchNewEmoji(_ pinchGestureRecognizer : UIPinchGestureRecognizer) {
+        let imageView = pinchGestureRecognizer.view as! UIImageView
+        let scale = pinchGestureRecognizer.scale
         
+        print(scale)
+        
+        imageView.transform = CGAffineTransform(scaleX: scale, y: scale)
+    }
+    
+    func onPanNewEmoji(_ panGestureRecognizer: UIPanGestureRecognizer) {
+        let imageView = panGestureRecognizer.view as! UIImageView
+        let point = panGestureRecognizer.location(in: self.view)
+        switch panGestureRecognizer.state {
+        case .began:
+            UIView.animate(withDuration: 0.3) {
+                imageView.transform = CGAffineTransform(scaleX: 1.8, y: 1.8)
+                self.view.layoutIfNeeded()
+            }
+        case .changed:
+            imageView.center = point
+        case .ended:
+            UIView.animate(withDuration: 0.3) {
+                imageView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                self.view.layoutIfNeeded()
+            }
+        default: break
+        }
+        
+    }
+    
+    @IBAction func onTrayPanGesture(_ panGestureRecognizer: UIPanGestureRecognizer) {
         let translation = panGestureRecognizer.translation(in: self.view)
         let velocity = panGestureRecognizer.velocity(in: view)
         
