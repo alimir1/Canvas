@@ -9,13 +9,15 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var trayView: UIView!
     
     var originalCenter: CGPoint!
     
     var trayCenterWhenOpen: CGPoint!
     var trayCenterWhenClosed: CGPoint!
+    
+    var newlyCreatedFace: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,8 +26,32 @@ class ViewController: UIViewController {
         trayCenterWhenClosed = CGPoint(x: trayView.center.x, y: trayView.center.y + 200)
     }
     
+    @IBAction func onPanEmoji(_ panGestureRecognizer: UIPanGestureRecognizer) {
+        
+        //let translation = panGestureRecognizer.translation(in: self.view)
+        let point = panGestureRecognizer.location(in: self.view)
+        
+        switch panGestureRecognizer.state {
+        case .began:
+            let imageView = panGestureRecognizer.view as! UIImageView
+            // Create a new image view that has the same image as the one currently panning
+            newlyCreatedFace = UIImageView(image: imageView.image)
+            // Add the new face to the tray's parent view. 
+            view.addSubview(newlyCreatedFace)
+            // Initialize the position of the new face. 
+            newlyCreatedFace.center = imageView.center
+            newlyCreatedFace.center.y += trayView.frame.origin.y
+        case .changed:
+            newlyCreatedFace.center = CGPoint(x: point.x , y:  point.y)
+            break;
+        case .ended:
+            break
+        default:break
+        }
+    }
+    
     @IBAction func onTrayPanGesture(_ panGestureRecognizer: UIPanGestureRecognizer) {
-//        let point = panGestureRecognizer.location(in: self.view)
+        //        let point = panGestureRecognizer.location(in: self.view)
         
         let translation = panGestureRecognizer.translation(in: self.view)
         let velocity = panGestureRecognizer.velocity(in: view)
@@ -55,7 +81,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
 
