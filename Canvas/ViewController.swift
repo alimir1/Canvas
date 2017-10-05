@@ -36,9 +36,10 @@ class ViewController: UIViewController {
             newlyCreatedFace.isUserInteractionEnabled = true
             let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanNewEmoji))
             let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(onPinchNewEmoji))
+            let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(onRotateNewEmoji))
             newlyCreatedFace.addGestureRecognizer(panGesture)
             newlyCreatedFace.addGestureRecognizer(pinchGesture)
-            
+            newlyCreatedFace.addGestureRecognizer(rotationGesture)
             view.addSubview(newlyCreatedFace)
             newlyCreatedFace.center = imageView.center
             newlyCreatedFace.center.y += trayView.frame.origin.y
@@ -49,6 +50,12 @@ class ViewController: UIViewController {
             break
         default:break
         }
+    }
+    
+    func onRotateNewEmoji(_ rotateGestureRecognizer: UIRotationGestureRecognizer) {
+        let angle = rotateGestureRecognizer.rotation
+        let imageView = rotateGestureRecognizer.view as! UIImageView
+        imageView.transform = CGAffineTransform(rotationAngle: angle)
     }
     
     func onPinchNewEmoji(_ pinchGestureRecognizer : UIPinchGestureRecognizer) {
