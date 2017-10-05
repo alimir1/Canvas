@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var trayView: UIView!
     
@@ -37,6 +37,9 @@ class ViewController: UIViewController {
             let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanNewEmoji))
             let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(onPinchNewEmoji))
             let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(onRotateNewEmoji))
+            panGesture.delegate = self
+            pinchGesture.delegate = self
+            rotationGesture.delegate = self
             newlyCreatedFace.addGestureRecognizer(panGesture)
             newlyCreatedFace.addGestureRecognizer(pinchGesture)
             newlyCreatedFace.addGestureRecognizer(rotationGesture)
@@ -61,9 +64,6 @@ class ViewController: UIViewController {
     func onPinchNewEmoji(_ pinchGestureRecognizer : UIPinchGestureRecognizer) {
         let imageView = pinchGestureRecognizer.view as! UIImageView
         let scale = pinchGestureRecognizer.scale
-        
-        print(scale)
-        
         imageView.transform = CGAffineTransform(scaleX: scale, y: scale)
     }
     
@@ -118,6 +118,8 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
 }
 
